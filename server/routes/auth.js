@@ -6,9 +6,10 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/User")
 const Profile = require("../models/profile")
 
-
+// register
 router.post("/register", async (req, res) => {
     const { name, email, password } = req.body;
+
     try {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
@@ -37,5 +38,45 @@ router.post("/register", async (req, res) => {
         res.status(500).json({ message: "Error creating User" });
     }
 });
+
+// login
+router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(401).json({ message: "Invalid Credentials" })
+
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) return res.status(401).json({ message: "Invalid Credentials" })
+
+    const existingProfile = await Profile.findOne({ user: user._id })
+    if (!existingProfile) {
+        const profile = new Profile({
+            user: user._id,
+            bio: "",
+            phone: "",
+            gender: "",
+            dob: null,
+            avatar: "",
+            location: "",
+        })
+        await profile.save()
+    }
+    const token = jwt.sign(
+        {
+            id: user._id,
+            isHost: user.isHost
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+    );
+    res.json({
+        user: {
+            id: user._id,
+            name: user.name,
+            isHost: user.isHost,
+        }
+    })
+})
 
 module.exports = router;
