@@ -5,6 +5,7 @@ const cors = require("cors")
 const mongoose = require("mongoose")
 require("dotenv").config();
 const authRoutes = require("./routes/auth")
+const profileRoutes = require("./routes/profile")
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes)
+app.use("/api/profile", profileRoutes)
 
 mongoose
     .connect(process.env.MONGO_URL)
