@@ -7,6 +7,7 @@ require("dotenv").config();
 const authRoutes = require("./routes/auth")
 const profileRoutes = require("./routes/profile")
 const listingRoutes = require("./routes/listings")
+const bookingRoutes = require("./routes/booking")
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes)
 app.use("/api/profile", profileRoutes)
 app.use("/api/listings", listingRoutes)
+app.use("/api/bookings", bookingRoutes)
 
 mongoose
     .connect(process.env.MONGO_URL)
