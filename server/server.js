@@ -9,6 +9,8 @@ const profileRoutes = require("./routes/profile")
 const listingRoutes = require("./routes/listings")
 const bookingRoutes = require("./routes/booking")
 
+const PORT = process.env.PORT || 5000;
+
 const app = express();
 
 app.use(cors())
@@ -28,4 +30,5 @@ mongoose
     .then(() => console.log("Mongodb Connected"))
     .catch((err) => console.error(err));
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+// app.listen(5000, () => console.log("Server running on port 5000"));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
